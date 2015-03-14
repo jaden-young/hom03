@@ -14,26 +14,17 @@ public class PassageChecker {
 	Scanner scanFile;
 	private CircularQueue<LinkedStack<String>> passageQueue;
 	
+	/**
+	 * Only constructor
+	 * @param pathToFile Name of the file to search through. If the file 
+	 * is stored in the NetBeans project folder, no path is needed, simply
+	 * the name of the file
+	 *  Ex: "test1.txt"
+	 * @throws FileNotFoundException Thrown if the file cannot be found
+	 */
 	public PassageChecker(String pathToFile) throws FileNotFoundException {
 		inputFile = new File(pathToFile);
 		scanFile = new Scanner(inputFile);
-		readFile(inputFile);
-	}
-	
-	private boolean hasEnd(String input) {
-		String onlyLetters = "";
-		for(int i = 0; i < input.length(); i++) {
-			if(Character.isLetter(input.charAt(i))) {
-				onlyLetters += input.charAt(i);
-			}
-			if(onlyLetters.length() > 3)
-				return false;
-		}
-		return onlyLetters.equalsIgnoreCase("end");
-	}
-	
-	
-	private void readFile(File input) {
 		LinkedStack<String> currentPassage = new LinkedStack<>();
 		while(scanFile.hasNextLine()) {
 			String currentLine = scanFile.nextLine();
@@ -47,6 +38,21 @@ public class PassageChecker {
 		}
 	}
 	
+	//returns true when a string contains the word "end" with no other letters
+	private boolean hasEnd(String input) {
+		String onlyLetters = "";
+		for(int i = 0; i < input.length(); i++) {
+			if(Character.isLetter(input.charAt(i))) {
+				onlyLetters += input.charAt(i);
+			}
+			if(onlyLetters.length() > 3)
+				return false;
+		}
+		return onlyLetters.equalsIgnoreCase("end");
+	}
+	
+	//returns a string that has all the words seperated only by single spaces
+	//condenses multiple delimiters like ", " into one single space
 	private String formatString(String input) {
 		String formattedString = "";
 		boolean isDelimiter = false;
@@ -64,6 +70,10 @@ public class PassageChecker {
 		return formattedString;
 	}
 	
+	//calls the format method to ensure both strings are formatted correctly
+	// "word word word word"
+	//then compares word by word for equality ignoring case
+	//returns true if all words are equal, false if not
 	private boolean compareStrings(String a, String b) {
 		String formA = formatString(a);
 		String formB = formatString(b);
@@ -76,6 +86,10 @@ public class PassageChecker {
 		return true;
 	}
 	
+	//returns true if the the stack reads the same from top down as it does
+	//from bottom up
+	//the reverse method is called so many times simply to produce copies 
+	//to refrain from modifying the original array
 	private boolean isSame(LinkedStack<String> inputStack) {
 		LinkedStack<String> rightSideUp = inputStack.reverse();
 		LinkedStack<String> upSideDown = rightSideUp.reverse();
@@ -86,6 +100,13 @@ public class PassageChecker {
 		return true;
 	}
 	
+	/**
+	 * This is the bread and butter. The only public method besides the 
+	 * constructor in the class. Will return a string containing the full text
+	 * of each passage (minus "end"), along with stating whether or not the 
+	 * passage reads the same top to bottom as it does bottom to top
+	 * @return String containing formatted output
+	 */
 	@Override
 	public String toString() {
 		String output = "";
