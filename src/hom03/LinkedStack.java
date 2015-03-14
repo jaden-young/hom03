@@ -33,5 +33,12 @@ public class LinkedStack<T> {
 	public T top() {
 		return list.getItem(0);
 	}
-
+	
+	public LinkedStack<T> reverse() {
+		LinkedStack<T> buffer = new LinkedStack<>();
+		while(!isEmpty()) {
+			buffer.push(this.pop());
+		}
+		return buffer;
+	}
 }
